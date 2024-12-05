@@ -19,9 +19,9 @@
         <link rel="stylesheet" href="./style.css" />
 
         <!-- Mapy.cz -->
-        <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
-        <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
-
+        <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+        <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.02.min.css">
     <body>
         <header>
             <h1 class="p-5 display-1 text-white text-center">Výpočet dojezdu a spotřeby auta</h1>
@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="cena3" class="form-label">Cena za 1 l benzinu (Kč)</label>
-                                    <input type="number" class="form-control" id="cenaGas" name="cenaGas" required />
+                                    <input type="number" class="form-control" id="cenaGas" name="cenaGas" value="35" />
                                 </div>
                                 <div class="mb-3">
                                     <label for="vzdalenost2" class="form-label">Délka cesty (km)</label>
@@ -141,13 +141,24 @@
                                     <input type="number" class="form-control" id="spotrebaMap" name="spotrebaMap" required />
                                 </div>
                                 <div class="mb-3">
-                                    <label for="kapacita2" class="form-label">Kapacita nádrže auta (l)</label>
+                                    <label for="kapacita2" class="form-label">Aktuální kapacita nádrže auta (l)</label>
                                     <input type="number" class="form-control" id="kapacitaMap" name="kapacitaMap" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cena4" class="form-label">Cena za 1 l benzinu (Kč)</label>
+                                    <input type="number" class="form-control" id="cenaMap" name="cenaMap" value="35" required />
                                 </div>
 
                             </form>
-                            <button type="submit" class="btn btn-primary" id="subMap">Vypočítat</button>
-                            <div class="result" id="map" class="mt-4"></div>
+                            <button type="submit" class="btn btn-primary" id="subMap">Najít</button>
+                            <div class="result" id="resultMap"></div>
+                            <div id="map" class="mt-3"></div>
+                            <form id="geocode-form">
+                                <div class="autoComplete_wrapper">
+                                    <input id="autoComplete" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off">
+                                </div>
+                            </form>
+
                         </div>
                     </div>
                 </div>
@@ -169,6 +180,10 @@
             integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
             crossorigin="anonymous"
         ></script>
+
+        <!-- mapycz-->
+
+        <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
 
         <script src="./scripts/main.js"></script>
         <script src="./scripts/route.js"></script>

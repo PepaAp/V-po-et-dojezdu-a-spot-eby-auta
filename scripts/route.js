@@ -2,51 +2,51 @@ const API_KEY = 'yGKz_swsy5jUIAmEEWLR5iCutHf2EN4MVvsJysWYMZE';
 
 
 /*
-We create a map with initial coordinates zoom, a raster tile source, a layer using that source, a geojson source and a layer using that source
+We create a map with initial coordinates zoom, a raster tile source and a layer using that source.
 See https://maplibre.org/maplibre-gl-js-docs/example/map-tiles/
 See https://maplibre.org/maplibre-gl-js-docs/style-spec/sources/#raster
 See https://maplibre.org/maplibre-gl-js-docs/style-spec/layers/
 */
 const map = new maplibregl.Map({
 	container: 'map',
-	center: [15.335, 49.741],
-	zoom: 7,
+	center: [14.8981184, 49.8729317],
+	zoom: 6,
 	style: {
 		version: 8,
 		sources: {
-    	// style for map tiles
 			'basic-tiles': {
 				type: 'raster',
 				url: `https://api.mapy.cz/v1/maptiles/basic/tiles.json?apikey=${API_KEY}`,
 				tileSize: 256,
 			},
-      // style for our geometry
-      'route-geometry': {
-        type: 'geojson',
-        data: {
-          type: "LineString",
-          coordinates: [],
-        },
-      },
+      'markers': {
+				type: 'geojson',
+				data: {
+					type: 'FeatureCollection',
+					features: [],
+				},
+				generateId: true,
+			},
 		},
-		layers: [{
-			id: 'tiles',
-			type: 'raster',
-			source: 'basic-tiles',
-		}, {
-      id: 'route-geometry',
-      type: 'line',
-      source: 'route-geometry',
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'round',
+		layers: [
+    	{
+        id: 'tiles',
+        type: 'raster',
+        source: 'basic-tiles',
       },
-      paint: {
-        'line-color': '#0033ff',
-        'line-width': 8,
-        'line-opacity': 0.6,
+      {
+      	id: 'markers',
+        type: 'symbol',
+        source: 'markers',
+        layout: {
+          'icon-image': 'marker-icon',
+          'icon-size': window.devicePixelRatio > 1 ? 0.5 : 1,
+          'icon-allow-overlap': true,
+        },
+        paint: {},
+        filter: ['==', '$type', 'Point'],
       },
-    }],
+    ],
 	},
 });
 
@@ -72,73 +72,132 @@ class LogoControl {
 	}
 }
 
-// we add our LogoControl to the map
+// finally we add our LogoControl to the map
 map.addControl(new LogoControl(), 'bottom-left');
 
-// function for calculating a bbox from an array of coordinates
-function bbox(coords) {
-	let minLatitude = Infinity;
-	let minLongitude = Infinity;
-	let maxLatitude = -Infinity;
-	let maxLongitude = -Infinity;
+const form = document.querySelector('#geocode-form');
+const input = document.querySelector('#geocode-input');
 
-	coords.forEach(coor => {
-		minLongitude = Math.min(coor[0], minLongitude);
-		maxLongitude = Math.max(coor[0], maxLongitude);
-		minLatitude = Math.min(coor[1], minLatitude);
-		maxLatitude = Math.max(coor[1], maxLatitude);
-	});
+form.addEventListener('submit', function(event) {
+	event.preventDefault();
+  geocode(input.value);
+}, false);
 
-	return [
-		[minLongitude, minLatitude],
-		[maxLongitude, maxLatitude],
-	];
-}
-
-// coordinates somewhere in Prague
-const coordsPrague = [14.4009399, 50.0711206];
-// coordinates somewhere in Brno
-const coordsBrno = [16.5661545, 49.1747438];
-
-// This is an asynchronous function for querying a route between the two points defined above
-// See https://api.mapy.cz/v1/docs/routing/#/routing/basic_route_v1_routing_route_get
-async function route() {
-  try {
-    const url = new URL(`https://api.mapy.cz/v1/routing/route`);
-
-    url.searchParams.set('apikey', API_KEY);
-    url.searchParams.set('lang', 'cs');
-    url.searchParams.set('start', coordsPrague.join(','));
-    url.searchParams.set('end', coordsBrno.join(','));
-    // other possible routeType values include: car_fast, car_fast_traffic, car_short, foot_fast, bike_road, bike_mountain
-    url.searchParams.set('routeType', 'car_fast_traffic');
-    // if you want to avoid paid routes (eg. highways) set this to true
-    url.searchParams.set('avoidToll', 'false');
-
-    const response = await fetch(url.toString(), {
-      mode: 'cors',
-    });
-    const json = await response.json();
-
-    // we output the length and duration of the result route to the console
-    console.log(`length: ${json.length / 1000} km`, `duration: ${Math.floor(json.duration / 60)}m ${json.duration % 60}s`);
-    
-    // then we set the retrieved data as the geometry of our geojson layer
-    const source = map.getSource('route-geometry');
-
-		if (source && json.geometry) {
-			source.setData(json.geometry);
-      // finally we set the map to show the whole geometry in the viewport
-      map.jumpTo(map.cameraForBounds(bbox(json.geometry.geometry.coordinates), {
-        padding: 40,
-      }));
-    }
-  } catch (ex) {
-    console.log(ex);
+const inputElem = document.querySelector("#autoComplete");
+// cache - [key: query] = suggest items
+const queryCache = {};
+// get items by query
+const getItems = async(query) => {
+	if (queryCache[query]) {
+  	return queryCache[query];
   }
-}
+  
+	try {
+    // you need to use your own api key!
+  	const fetchData = await fetch(`https://api.mapy.cz/v1/suggest?lang=cs&limit=5&type=regional.address&apikey=${API_KEY}&query=${query}`);
+    const jsonData = await fetchData.json();
+    // map values to { value, data }
+    const items = jsonData.items.map(item => ({
+      value: item.name,
+      data: item,
+    }));
+    
+    // save to cache
+    queryCache[query] = items;
+    
+    return items;
+  } catch (exc) {
+  	return [];
+  }
+};
 
-map.on('load', () => {
-	// we can route only after the map is fully loaded so that the results do not arrive sooner
-  route();
+const autoCompleteJS = new autoComplete({
+	selector: () => inputElem,
+	placeHolder: "Enter your address...",
+  searchEngine: (query, record) => `<mark>${record}</mark>`,
+	data: {
+    keys: ["value"],
+		src: async(query) => {
+    	// get items for current query
+      const items = await getItems(query);
+      
+      // cache hit? - there is a problem, because this provider needs to get items
+      // for each query and cannot handle different timeouts for different query.
+      // if previous query was completed - it's already in the cache, and some
+      // old query is completed, we test it againts current query and returns correct items.
+      if (queryCache[inputElem.value]) {
+      	return queryCache[inputElem.value];
+      }
+      
+      return items;
+		},
+		cache: false,
+	},
+	resultItem: {
+  	element: (item, data) => {
+    	const itemData = data.value.data;
+    	const desc = document.createElement("div");
+      
+      desc.style = "overflow: hidden; white-space: nowrap; text-overflow: ellipsis;";
+      desc.innerHTML = `${itemData.label}, ${itemData.location}`;
+      item.append(
+      	desc,
+      );
+    },
+		highlight: true
+	},
+	resultsList: {
+ 		 element: (list, data) => {
+     	list.style.maxHeight = "max-content";
+    	list.style.overflow = "hidden";
+    
+       if (!data.results.length) {
+         const message = document.createElement("div");
+         
+         message.setAttribute("class", "no_result");
+         message.style = "padding: 5px";
+         message.innerHTML = `<span>Found No Results for "${data.query}"</span>`;
+         list.prepend(message);
+       } else {
+       	const logoHolder = document.createElement("div");
+        const text = document.createElement("span");
+        const img = new Image();
+        
+        logoHolder.style = "padding: 5px; display: flex; align-items: center; justify-content: end; gap: 5px; font-size: 12px;";
+        text.textContent = "Powered by";
+        img.src = "https://api.mapy.cz/img/api/logo-small.svg";
+        img.style = "width: 60px";
+        logoHolder.append(text, img);
+       	list.append(logoHolder);
+       }
+     },
+		noResults: true,
+	},
+});
+inputElem.addEventListener("selection", event => {
+    // "event.detail" carries the autoComplete.js "feedback" object
+    // saved data from line 16 (mapping)
+    const origData = event.detail.selection.value.data;
+    // data to debug
+    console.log(origData);
+    inputElem.value = origData.name;
+    
+    // Extract latitude and longitude from origData
+    const { lon, lat } = origData.position;
+
+    // Jump to the coordinates of origData
+    map.jumpTo({
+        center: [lon, lat],
+        zoom: 15 // Adjust the zoom level as needed
+    });
+});
+
+map.on('load', function () {
+	map.loadImage(
+		'https://api.mapy.cz/img/api/marker/drop-red.png',
+		function (error, image) {
+			if (error) throw error;
+			map.addImage('marker-icon', image);
+    }
+  );
 });

@@ -1,6 +1,7 @@
 let car = {
     usage: 0,
     capacity: 0,
+    gasLeft: 0,
     maxDistance: 0,
     distance: 0,
     priceGas: 0,
@@ -36,6 +37,10 @@ let car = {
             return `MHD je levnější než auto o ${priceDiff.toFixed(2)} Kč. Za cestu MHD zaplatíte ${this.pricePT} Kč.`;    
         }
     },
+
+    calcPrice: function() {
+        return ((this.gasLeft * this.usage) / 100) * this.usage * this.priceGas;
+    }
 };
 
 document.getElementById('subDistance').addEventListener('click', function() {
@@ -76,6 +81,12 @@ document.getElementById('subPTxCar').addEventListener('click', function() {
     document.getElementById('resultPTxCar').innerHTML = `${car.calcPTxCar()}`;
 });
 
-
+document.getElementById('subMap').addEventListener('click', function() {
+    event.preventDefault();
+    car.usage = document.getElementById('spotrebaMap').value;
+    car.gasLeft = document.getElementById('kapacitaMap').value;
+    car.priceGas = document.getElementById('cenaMap').value;
+    document.getElementById('resultMap').innerHTML = `Maximální cena za cestu je ${car.calcPrice().toFixed(2)} Kč.`;
+});
 
 

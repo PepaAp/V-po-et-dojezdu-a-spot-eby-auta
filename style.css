@@ -12,6 +12,12 @@ body {
     background-color: #cfcccc;
 }
 
+button {
+    background-color: #30523e !important;
+    color: white !important;
+    border: none !important;
+}
+
 #map {
     height: 300px; 
     width: 100%;
