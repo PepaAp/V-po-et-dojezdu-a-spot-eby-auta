@@ -18,15 +18,13 @@
         />
         <link rel="stylesheet" href="./style.css" />
 
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin=""/>
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""></script>
+        <!-- Mapy.cz -->
+        <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
+        <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
+
     <body>
         <header>
-            <h1 class="p-4 display-1 bg-primary text-white text-center">Výpočet dojezdu a spotřeby auta</h1>
+            <h1 class="p-5 display-1 text-white text-center">Výpočet dojezdu a spotřeby auta</h1>
         </header>
         <main>
             <div
@@ -46,7 +44,7 @@
                                     <input type="number" class="form-control" id="kapacita" name="kapacita" required />
                                 </div>
                                 <button type="submit" class="btn btn-primary" id="subDistance">Vypočítat</button>
-                                <div id="resultDis"></div>
+                                <div class="result" id="resultDis"></div>
                             </form>
                         </div>
                     </div>
@@ -63,7 +61,7 @@
                                     <input type="number" class="form-control" id="kapacitaUse" name="kapacitaUse" required />
                                 </div>
                                 <button type="submit" class="btn btn-primary" id="subUsege">Vypočítat</button>
-                                <div id="resultUse"></div>
+                                <div class="result" id="resultUse"></div>
                             </form>
                         </div>
                     </div>
@@ -82,7 +80,7 @@
                                     <input type="number" class="form-control" id="spotrebaCap" name="spotrebaCap" required />
                                 </div>
                                 <button type="submit" class="btn btn-primary" id="subCapacity">Vypočítat</button>
-                                <div id="resultCap"></div>
+                                <div class="result" id="resultCap"></div>
                             </form>
                         </div>
                     </div>
@@ -104,7 +102,7 @@
                                 </div>
                                 
                                 <button type="submit" class="btn btn-primary" id="subPrice">Vypočítat</button>
-                                <div id="resultPrice"></div>
+                                <div class="result" id="resultPrice"></div>
                             </form>
                         </div>
                     </div>
@@ -131,15 +129,27 @@
                                     <input type="number" class="form-control" id="vzdalenostPTxCar" name="vzdalenostPTxCar" required />
                                 </div>
                                 <button type="submit" class="btn btn-primary" id="subPTxCar">Vypočítat</button>
-                                <div id="resultPTxCar"></div>
+                                <div class="result" id="resultPTxCar"></div>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <h3 class="card-title"></h3>
+                            <h3 class="card-title">Kam můžu autem dojet na základě spotřeby a kapacity nádrže</h3>
+                            <form id="form6">
+                                <div class="mb-3">
+                                    <label for="spotreba5" class="form-label">Spotřeba auta na 100 km (l)</label>
+                                    <input type="number" class="form-control" id="spotrebaMap" name="spotrebaMap" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="kapacita2" class="form-label">Kapacita nádrže auta (l)</label>
+                                    <input type="number" class="form-control" id="kapacitaMap" name="kapacitaMap" required />
+                                </div>
+
+                            </form>
+                            <button type="submit" class="btn btn-primary" id="subMap">Vypočítat</button>
+                            <div class="result" id="map" class="mt-4"></div>
                         </div>
                     </div>
-                    <div class="map"></div>
                 </div>
             </div>
             
