@@ -18,8 +18,13 @@
         />
         <link rel="stylesheet" href="./style.css" />
         <script src="./scripts/main.js"></script>
-    </head>
-
+        <script src="./scripts/route.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
     <body>
         <header>
             <h1 class="p-4 display-1 bg-primary text-white text-center">Výpočet dojezdu a spotřeby auta</h1>
@@ -125,9 +130,13 @@
                                 <button type="submit" class="btn btn-primary">Vypočítat</button>
                         </div>
                     </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title"></h3>
+                        </div>
+                    </div>
+                    <div class="map"></div>
                 </div>
-                
-                
             </div>
             
         </main>
