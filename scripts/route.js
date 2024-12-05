@@ -23,7 +23,7 @@ const LogoControl = L.Control.extend({
     position: 'bottomleft',
   },
 
-  onAdd: function (map) {
+  onAdd: function () {
     const container = L.DomUtil.create('div');
     const link = L.DomUtil.create('a', '', container);
 

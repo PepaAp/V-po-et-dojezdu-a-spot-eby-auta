@@ -17,8 +17,7 @@
             crossorigin="anonymous"
         />
         <link rel="stylesheet" href="./style.css" />
-        <script src="./scripts/main.js"></script>
-        <script src="./scripts/route.js"></script>
+
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""/>
@@ -46,7 +45,8 @@
                                     <label for="kapacita" class="form-label">Kapacita nádrže auta (l)</label>
                                     <input type="number" class="form-control" id="kapacita" name="kapacita" required />
                                 </div>
-                                <button type="submit" class="btn btn-primary">Vypočítat</button>
+                                <button type="submit" class="btn btn-primary" id="subDistance">Vypočítat</button>
+                                <div id="resultDis"></div>
                             </form>
                         </div>
                     </div>
@@ -56,13 +56,14 @@
                             <form id="form2">
                                 <div class="mb-3">
                                     <label for="dojezd" class="form-label">Dojezd auta (km)</label>
-                                    <input type="number" class="form-control" id="dojezd" name="dojezd" required />
+                                    <input type="number" class="form-control" id="dojezdUse" name="dojezdUse" required />
                                 </div>
                                 <div class="mb-3">
-                                    <label for="kapacita2" class="form-label">Kapacita nádrže auta (l)</label>
-                                    <input type="number" class="form-control" id="kapacita2" name="kapacita2" required />
+                                    <label for="kapacita" class="form-label">Kapacita nádrže auta (l)</label>
+                                    <input type="number" class="form-control" id="kapacitaUse" name="kapacitaUse" required />
                                 </div>
-                                <button type="submit" class="btn btn-primary">Vypočítat</button>
+                                <button type="submit" class="btn btn-primary" id="subUsege">Vypočítat</button>
+                                <div id="resultUse"></div>
                             </form>
                         </div>
                     </div>
@@ -74,34 +75,36 @@
                             <form id="form3">
                                 <div class="mb-3">
                                     <label for="dojezd2" class="form-label">Dojezd auta (km)</label>
-                                    <input type="number" class="form-control" id="dojezd2" name="dojezd2" required />
+                                    <input type="number" class="form-control" id="dojezdCap" name="dojezdCap" required />
                                 </div>
                                 <div class="mb-3">
                                     <label for="spotreba2" class="form-label">Spotřeba auta na 100 km (l)</label>
-                                    <input type="number" class="form-control" id="spotreba2" name="spotreba2" required />
+                                    <input type="number" class="form-control" id="spotrebaCap" name="spotrebaCap" required />
                                 </div>
-                                <button type="submit" class="btn btn-primary">Vypočítat</button>
+                                <button type="submit" class="btn btn-primary" id="subCapacity">Vypočítat</button>
+                                <div id="resultCap"></div>
                             </form>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <h3 class="card-title">Výpočet ceny za km a ceny za celou cestu na základě spotřeby auta</h3>
+                            <h3 class="card-title">Výpočet ceny za cestu na základě spotřeby auta</h3>
                             <form id="form4">
                                 <div class="mb-3">
                                     <label for="cena" class="form-label">Cena za 1 l benzinu (Kč)</label>
-                                    <input type="number" class="form-control" id="cena" name="cena" required />
+                                    <input type="number" class="form-control" id="cenaPri" name="cenaPri" value="35" required />
                                 </div>
                                 <div class="mb-3">
                                     <label for="spotreba3" class="form-label">Spotřeba auta na 100 km (l)</label>
-                                    <input type="number" class="form-control" id="spotreba3" name="spotreba3" required />
+                                    <input type="number" class="form-control" id="spotrebaPri" name="spotrebaPri" required />
                                 </div>
                                 <div class="mb-3">
                                     <label for="vzdalenost" class="form-label">Vzdálenost cesty (km)</label>
-                                    <input type="number" class="form-control" id="vzdalenost" name="vzdalenost" required />
+                                    <input type="number" class="form-control" id="vzdalenostPri" name="vzdalenostPri" required />
                                 </div>
                                 
-                                <button type="submit" class="btn btn-primary">Vypočítat</button>
+                                <button type="submit" class="btn btn-primary" id="subPrice">Vypočítat</button>
+                                <div id="resultPrice"></div>
                             </form>
                         </div>
                     </div>
@@ -113,21 +116,22 @@
                             <form id="form5">
                                 <div class="mb-3">
                                     <label for="cena2" class="form-label">Cena za jízdenku veřejnou dopravou (Kč)</label>
-                                    <input type="number" class="form-control" id="cena2" name="cena2" required />
+                                    <input type="number" class="form-control" id="cenaDop" name="cenaDop" required />
                                 </div>
                                 <div class="mb-3">
                                     <label for="spotreba4" class="form-label">Spotřeba auta na 100 km (l)</label>
-                                    <input type="number" class="form-control" id="spotreba4" name="spotreba4" required />
+                                    <input type="number" class="form-control" id="spotrebaPTxCar" name="spotrebaPTxCar" required />
                                 </div>
                                 <div class="mb-3">
                                     <label for="cena3" class="form-label">Cena za 1 l benzinu (Kč)</label>
-                                    <input type="number" class="form-control" id="cena3" name="cena3" required />
+                                    <input type="number" class="form-control" id="cenaGas" name="cenaGas" required />
                                 </div>
                                 <div class="mb-3">
-                                    <label for="vzdalenost2" class="form-label">Vzdálenost cesty (km)</label>
-                                    <input type="number" class="form-control" id="vzdalenost2" name="vzdalenost2" required />
+                                    <label for="vzdalenost2" class="form-label">Délka cesty (km)</label>
+                                    <input type="number" class="form-control" id="vzdalenostPTxCar" name="vzdalenostPTxCar" required />
                                 </div>
-                                <button type="submit" class="btn btn-primary">Vypočítat</button>
+                                <button type="submit" class="btn btn-primary" id="subPTxCar">Vypočítat</button>
+                                <div id="resultPTxCar"></div>
                         </div>
                     </div>
                     <div class="card">
@@ -155,5 +159,8 @@
             integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
             crossorigin="anonymous"
         ></script>
+
+        <script src="./scripts/main.js"></script>
+        <script src="./scripts/route.js"></script>
     </body>
 </html>
