@@ -24,7 +24,7 @@ let car = {
         return (this.usage * this.maxDistance) / 100;
     },
 
-    calcPrice: function() {
+    calcPriceRoad: function() {
         return (this.distance / 100) * this.usage * this.priceGas;
     },
 
@@ -73,7 +73,7 @@ document.getElementById('subPrice').addEventListener('click', function() {
     car.usage = document.getElementById('spotrebaPri').value;
     car.priceGas = document.getElementById('cenaPri').value;
     car.distance = document.getElementById('vzdalenostPri').value;
-    document.getElementById('resultPrice').innerHTML = `Cena za cestu je ${car.calcPrice().toFixed(2)} Kč.`;
+    document.getElementById('resultPrice').innerHTML = `Cena za cestu je ${car.calcPriceRoad().toFixed(2)} Kč.`;
 });
 
 document.getElementById('subPTxCar').addEventListener('click', function() {
