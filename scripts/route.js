@@ -190,7 +190,7 @@ inputElem.addEventListener("selection", event => {
     // Jump to the coordinates of origData
     map.jumpTo({
         center: [lon, lat],
-        zoom: 12 // Adjust the zoom level as needed
+        zoom: 7 // Adjust the zoom level as needed
     });
     circle(lon, lat);
 
