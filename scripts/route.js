@@ -206,7 +206,7 @@ function circle(lon, lat) {
       longitude: center[0]
     };
 
-    const km = radius / 100;
+    const km = radius;
     const ret = [];
     const distanceX = km / (111.32 * Math.cos(coords.latitude * Math.PI / 180));
     const distanceY = km / 110.574;

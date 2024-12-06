@@ -43,7 +43,7 @@ let car = {
     },
 
     calcMapDistance: function() {
-        return (this.gasLeft * this.usage) * 100;
+        return (this.gasLeft / this.usage) *100;
     }
 };
 
@@ -90,7 +90,7 @@ document.getElementById('subMap').addEventListener('click', function() {
     car.usage = document.getElementById('spotrebaMap').value;
     car.gasLeft = document.getElementById('kapacitaMap').value;
     car.priceGas = document.getElementById('cenaMap').value;
-    document.getElementById('resultMap').innerHTML = `Maximální cena za cestu je ${car.calcPrice().toFixed(2)} Kč.`;
+    document.getElementById('resultMap').innerHTML = `Maximální cena za cestu je ${car.calcPrice().toFixed(2)} Kč.\n Maximální vzdálenost je ${car.calcMapDistance().toFixed(2)} km.`;
 });
 
 
