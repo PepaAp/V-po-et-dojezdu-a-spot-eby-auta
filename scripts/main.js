@@ -39,7 +39,7 @@ let car = {
     },
 
     calcPrice: function() {
-        return ((this.gasLeft * this.usage) / 100) * this.usage * this.priceGas;
+        return this.gasLeft * this.priceGas
     },
 
     calcMapDistance: function() {
