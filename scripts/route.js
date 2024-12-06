@@ -50,6 +50,8 @@ const map = new maplibregl.Map({
 	},
 });
 
+
+
 /*
 We also require you to include our logo somewhere over the map.
 We create our own map control implementing a documented interface,
@@ -188,9 +190,76 @@ inputElem.addEventListener("selection", event => {
     // Jump to the coordinates of origData
     map.jumpTo({
         center: [lon, lat],
-        zoom: 15 // Adjust the zoom level as needed
+        zoom: 12 // Adjust the zoom level as needed
     });
+    circle(lon, lat);
+
 });
+
+function circle(lon, lat) {
+  const radius = car.calcMapDistance(); // radius in meters
+
+  // Function to create a circle polygon
+  function createCircle(center, radius, points = 64) {
+    const coords = {
+      latitude: center[1],
+      longitude: center[0]
+    };
+
+    const km = radius / 100;
+    const ret = [];
+    const distanceX = km / (111.32 * Math.cos(coords.latitude * Math.PI / 180));
+    const distanceY = km / 110.574;
+
+    let theta, x, y;
+    for (let i = 0; i < points; i++) {
+      theta = (i / points) * (2 * Math.PI);
+      x = distanceX * Math.cos(theta);
+      y = distanceY * Math.sin(theta);
+
+      ret.push([coords.longitude + x, coords.latitude + y]);
+    }
+    ret.push(ret[0]);
+
+    return {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [ret]
+      }
+    };
+  }
+
+  // Create a GeoJSON source with the circle data
+  const circleSource = {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: [createCircle([lon, lat], radius)],
+    },
+  };
+
+  // Check if the source already exists
+  if (map.getSource('circle-source')) {
+    // Update the source data
+    map.getSource('circle-source').setData(circleSource.data);
+  } else {
+    // Add the source to the map
+    map.addSource('circle-source', circleSource);
+
+    // Add a layer to visualize the circle
+    map.addLayer({
+      id: 'circle-layer',
+      type: 'fill',
+      source: 'circle-source',
+      paint: {
+        'fill-color': 'red',
+        'fill-opacity': 0.5,
+      },
+    });
+  }
+}
+
 
 map.on('load', function () {
 	map.loadImage(
