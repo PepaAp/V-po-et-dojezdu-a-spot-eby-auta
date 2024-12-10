@@ -47,50 +47,105 @@ let car = {
     }
 };
 
-document.getElementById('subDistance').addEventListener('click', function() {
+function validateInput(value) {
+    let num = parseFloat(value);
+    return !isNaN(num) && num > 0 && num <= 2000;
+}
+
+document.getElementById('subDistance').addEventListener('click', function(event) {
     event.preventDefault();
-    car.usage = document.getElementById('spotreba').value;
-    car.capacity = document.getElementById('kapacita').value;
-    document.getElementById('resultDis').innerHTML = `Maximální dojezd auta je ${Math.round(car.calcMaxDistance())} km.`;
+    let usage = document.getElementById('spotreba').value;
+    let capacity = document.getElementById('kapacita').value;
+    if (validateInput(usage) && validateInput(capacity)) {
+        car.usage = usage;
+        car.capacity = capacity;
+        document.getElementById('resultDis').classList = 'result mt-3';
+        document.getElementById('resultDis').innerHTML = `Maximální dojezd auta je ${Math.round(car.calcMaxDistance())} km.`;
+    } else {
+        document.getElementById('resultDis').classList = 'alert alert-danger mt-3';
+        document.getElementById('resultDis').innerHTML = `Please enter valid positive numbers.`;
+    }
+}); 
+
+document.getElementById('subUsege').addEventListener('click', function(event) {
+    event.preventDefault();
+    let maxDistance = document.getElementById('dojezdUse').value;
+    let capacity = document.getElementById('kapacitaUse').value;
+    if (validateInput(maxDistance) && validateInput(capacity)) {
+        car.maxDistance = maxDistance;
+        car.capacity = capacity;
+        document.getElementById('resultUse').classList = 'result mt-3';
+        document.getElementById('resultUse').innerHTML = `Spotřeba auta je ${car.calcUsage().toFixed(2)} l na km.`;
+    } else {
+        document.getElementById('resultUse').classList = 'alert alert-danger mt-3';
+        document.getElementById('resultUse').innerHTML = `Please enter valid positive numbers.`;
+    }
 });
 
-document.getElementById('subUsege').addEventListener('click', function() {
+document.getElementById('subCapacity').addEventListener('click', function(event) {
     event.preventDefault();
-    car.maxDistance = document.getElementById('dojezdUse').value;
-    car.capacity = document.getElementById('kapacitaUse').value;
-    document.getElementById('resultUse').innerHTML = `Spotřeba auta je ${car.calcUsage().toFixed(2)} l na km.`;
+    let usage = document.getElementById('spotrebaCap').value;
+    let maxDistance = document.getElementById('dojezdCap').value;
+    if (validateInput(usage) && validateInput(maxDistance)) {
+        car.usage = usage;
+        car.maxDistance = maxDistance;
+        document.getElementById('resultCap').classList = 'result mt-3';
+        document.getElementById('resultCap').innerHTML = `Kapacita nádrže auta je ${Math.round(car.calcCapacity())} l.`;
+    } else {
+        document.getElementById('resultCap').classList = 'alert alert-danger mt-3';
+        document.getElementById('resultCap').innerHTML = `Please enter valid positive numbers.`;
+    }
 });
 
-document.getElementById('subCapacity').addEventListener('click', function() {
+document.getElementById('subPrice').addEventListener('click', function(event) {
     event.preventDefault();
-    car.usage = document.getElementById('spotrebaCap').value;
-    car.maxDistance = document.getElementById('dojezdCap').value;
-    document.getElementById('resultCap').innerHTML = `Kapacita nádrže auta je ${Math.round(car.calcCapacity())} l.`;
+    let usage = document.getElementById('spotrebaPri').value;
+    let priceGas = document.getElementById('cenaPri').value;
+    let distance = document.getElementById('vzdalenostPri').value;
+    if (validateInput(usage) && validateInput(priceGas) && validateInput(distance)) {
+        car.usage = usage;
+        car.priceGas = priceGas;
+        car.distance = distance;
+        document.getElementById('resultPrice').classList = 'result mt-3';
+        document.getElementById('resultPrice').innerHTML = `Cena za cestu je ${car.calcPriceRoad().toFixed(2)} Kč.`;
+    } else {
+        document.getElementById('resultPrice').classList = 'alert alert-danger mt-3';
+        document.getElementById('resultPrice').innerHTML = `Please enter valid positive numbers.`;
+    }
 });
 
-document.getElementById('subPrice').addEventListener('click', function() {
+document.getElementById('subPTxCar').addEventListener('click', function(event) {
     event.preventDefault();
-    car.usage = document.getElementById('spotrebaPri').value;
-    car.priceGas = document.getElementById('cenaPri').value;
-    car.distance = document.getElementById('vzdalenostPri').value;
-    document.getElementById('resultPrice').innerHTML = `Cena za cestu je ${car.calcPriceRoad().toFixed(2)} Kč.`;
+    let pricePT = document.getElementById('cenaDop').value;
+    let priceGas = document.getElementById('cenaGas').value;
+    let distance = document.getElementById('vzdalenostPTxCar').value;
+    let usage = document.getElementById('spotrebaPTxCar').value;
+    if (validateInput(pricePT) && validateInput(priceGas) && validateInput(distance) && validateInput(usage)) {
+        car.pricePT = pricePT;
+        car.priceGas = priceGas;
+        car.distance = distance;
+        car.usage = usage;
+        document.getElementById('resultPTxCar').classList = 'result mt-3';
+        document.getElementById('resultPTxCar').innerHTML = `${car.calcPTxCar()}`;
+    } else {
+        document.getElementById('resultPTxCar').classList = 'alert alert-danger mt-3';
+        document.getElementById('resultPTxCar').innerHTML = `Please enter valid positive numbers.`;
+    }
 });
 
-document.getElementById('subPTxCar').addEventListener('click', function() {
+document.getElementById('subMap').addEventListener('click', function(event) {
     event.preventDefault();
-    car.pricePT = document.getElementById('cenaDop').value;
-    car.priceGas = document.getElementById('cenaGas').value;
-    car.distance = document.getElementById('vzdalenostPTxCar').value;
-    car.usage = document.getElementById('spotrebaPTxCar').value;
-    document.getElementById('resultPTxCar').innerHTML = `${car.calcPTxCar()}`;
+    let usage = document.getElementById('spotrebaMap').value;
+    let gasLeft = document.getElementById('kapacitaMap').value;
+    let priceGas = document.getElementById('cenaMap').value;
+    if (validateInput(usage) && validateInput(gasLeft) && validateInput(priceGas)) {
+        car.usage = usage;
+        car.gasLeft = gasLeft;
+        car.priceGas = priceGas;
+        document.getElementById('resultMap').classList = 'result mt-3';
+        document.getElementById('resultMap').innerHTML = `Maximální cena za cestu je ${car.calcPrice().toFixed(2)} Kč.\n Maximální vzdálenost je ${car.calcMapDistance().toFixed(2)} km.`;
+    } else {
+        document.getElementById('resultMap').classList = 'alert alert-danger mt-3';
+        document.getElementById('resultMap').innerHTML = `Please enter valid positive numbers.`;
+    }
 });
-
-document.getElementById('subMap').addEventListener('click', function() {
-    event.preventDefault();
-    car.usage = document.getElementById('spotrebaMap').value;
-    car.gasLeft = document.getElementById('kapacitaMap').value;
-    car.priceGas = document.getElementById('cenaMap').value;
-    document.getElementById('resultMap').innerHTML = `Maximální cena za cestu je ${car.calcPrice().toFixed(2)} Kč.\n Maximální vzdálenost je ${car.calcMapDistance().toFixed(2)} km.`;
-});
-
-
